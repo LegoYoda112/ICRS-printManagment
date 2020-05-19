@@ -5,7 +5,10 @@ import printFarm from "./printFarm.js";
 printFarm.loadPrinters();
 
 console.log(printFarm.list);
-console.log(printFarm.list[0]);
+
+printFarm.updatePrinters();
+
+console.log(printFarm.list);
 
 window.addEventListener("DOMContentLoaded", function (){
     // Init UI things here
