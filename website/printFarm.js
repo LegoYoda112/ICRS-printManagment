@@ -4,6 +4,9 @@ const printFarm = Object.create(null);
 
 // List of all printers
 printFarm.printerList = [];
+// List of loaded print history,
+// changes based on what type of history the user loads 
+printFarm.loadedPrintHistory = [];
 
 // Will end up being a async call to database
 const getPrinters = function () {
@@ -32,6 +35,12 @@ printFarm.updatePrinters = function () {
         printer.updateFromDB();
     });
     return;
+};
+
+// Print history options. Search by size, printer, user (admin)
+
+printFarm.loadPrintHistory () {
+    return
 };
 
 export default Object.freeze(printFarm);
