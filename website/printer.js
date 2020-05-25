@@ -3,7 +3,8 @@ const printer = Object.create(null);
 printer.Printer = function (name, type, active=false, status = "Ok", printing = false, progress = 0, ip = "") {
     this.name = name;
     this.active = active;
-    this.status = printing;
+    this.printing = false;
+    this.status = status;
     this.progress = progress;
     this.ip = ip;
     this.type = type;
