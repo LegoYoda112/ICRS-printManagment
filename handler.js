@@ -16,15 +16,17 @@ handlers.testAdd = function (obj, db) {
 
 handlers.listMessages = function (obj, db) {
     let messages = [];
-    db.all(`SELECT * FROM testing`, (err, rows) => {
-        if(err) {
-            console.log(err.message);
-        }
-        console.log(rows);
-        messages = rows;
-    });
-    console.log(messages);
-    return messages;
+
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM testing`, (err, rows) => {
+            if(err) {
+                console.log(err.message);
+            }
+            console.log(rows);
+            messages = rows;
+            resolve(messages);
+        });
+    })
 }
 
 const handler = function (obj, db) {

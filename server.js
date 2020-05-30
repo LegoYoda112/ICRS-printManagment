@@ -28,10 +28,10 @@ app.get("/printFarm", function(req, res) {
     const requestObject = req.body;
     console.log("Recived GET request!");
 
-    const responseObject = handler(requestObject, db);
-    console.log(responseObject);
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify(responseObject));
+    handler(requestObject, db).then(function (responseObject) {
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(responseObject));
+    });
 });
 
 app.listen(port, function () {
