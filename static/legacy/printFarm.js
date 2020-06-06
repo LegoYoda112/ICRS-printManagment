@@ -39,8 +39,8 @@ printFarm.updatePrinters = function () {
 
 // Print history options. Search by size, printer, user (admin)
 
-printFarm.loadPrintHistory () {
-    return
-};
+// printFarm.loadPrintHistory () {
+//     return
+// };
 
 export default Object.freeze(printFarm);
