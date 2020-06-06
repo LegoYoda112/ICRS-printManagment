@@ -25,6 +25,9 @@ app.post("/printFarm", function(req, res) {
         res.setHeader("Content-Type", "application/json");
         console.log(responseObject);
         res.end(JSON.stringify(responseObject));
+    }).catch(function(err){
+        console.error(err);
+        res.status(400).end("ERROR: " + err.message);
     });
 });
 

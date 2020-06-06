@@ -19,13 +19,13 @@ database.query = function (requestObj) {
 
 database.getPrinters = function () {
     return database.query({
-        "type": "getPrinterList"
+        "requestType": "getPrinterList"
     });
 }
 
 database.getLatestPrints = function () {
     return database.query({
-        "type": "getLatestPrints",
+        "requestType": "getLatestPrints",
         "num": 10
     });
 }
