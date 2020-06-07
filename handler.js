@@ -61,7 +61,7 @@ handlers.updatePrinter = function(obj, db) {
     });
 };
 
-handlers.getLatestPrints = function (obj, db) {
+handlers.getAllPrints = function (obj, db) {
     return new Promise(function(resolve, reject) {
         db.all(`SELECT * FROM prints`, function(err, rows) {
             if(err) {
@@ -85,7 +85,7 @@ handlers.addPrint = function (obj, db) {
             throw new Error("Print must have an owner_id");
         }
 
-        // If parameters are presnet in request object,
+        // If parameters are present in request object,
         // add them to the sql call
         let firstRow = true;
         parameters.forEach( function (parameter, index) {
@@ -106,7 +106,10 @@ handlers.addPrint = function (obj, db) {
         });
 
         sql_query += `(${sql_keys}) VALUES (${sql_values})`;
-        console.log(sql_query);
+
+        console.debug(sql_query);
+
+        //Run query and resolve empty
         db.run(sql_query, function(err) {
             if(err) {
                 console.error(err.message);
@@ -116,6 +119,47 @@ handlers.addPrint = function (obj, db) {
         });
     });
 };
+
+handlers.searchPrints = function(obj,db) {
+    return new Promise(function(resolve, reject) {
+        let sql_query = "SELECT * FROM prints WHERE ";
+        const parameters = ["path", "size", "owner_id", "length", 
+                        "filament_length", "filament_volume",
+                        "printer_id", "datetime"];
+        
+        // If parameters are present in the request object,
+        // add them to the search query with their corresponding
+        // comparison operators
+        let firstRow = true;
+        parameters.forEach( function (parameter, index) {
+            if (obj.hasOwnProperty(parameter)){
+                if(!firstRow){
+                    sql_query += " AND ";
+                }
+                firstRow = false;
+                sql_query += `${parameter} ${obj[parameter].comparison} `;
+                // Datetime doesn't need quotes around it
+                if (parameter === "datetime"){
+                    sql_query += `${obj[parameter].value}`;
+                } else {
+                    sql_query += `'${obj[parameter].value}'`;
+                }
+            }
+        });
+
+        // Debug the query
+        console.debug(sql_query);
+
+        // Run the query and resolve with the result
+        db.all(sql_query, function(err, rows) {
+            if(err) {
+                console.error(err.message);
+                throw new Error(err.message);
+            }
+            resolve(rows);
+        });
+    });
+}
 
 const handler = function (obj, db) {
     // Runs the corresponding handler function
