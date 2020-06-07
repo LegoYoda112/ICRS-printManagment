@@ -24,7 +24,7 @@ handlers.updatePrinter = function(obj, db) {
         // add its update value to the sql call
         let firstRow = true;
         parameters.forEach( function (parameter, index) {
-            if ( obj.hasOwnProperty(parameter) ){
+            if (obj.hasOwnProperty(parameter)){
                 if(!firstRow){
                     sql_query += ", ";
                 }
@@ -36,9 +36,9 @@ handlers.updatePrinter = function(obj, db) {
         sql_query += " ";
 
         // If printer_id is present: search by id
-        if ( obj.hasOwnProperty("printer_id") ) {
+        if (obj.hasOwnProperty("printer_id")) {
             // If name is also present: update name
-            if ( obj.hasOwnProperty("name") ) {
+            if (obj.hasOwnProperty("name")) {
                 sql_query += `name = '${obj.name}' `;
             }
             sql_query += `WHERE printer_id = ${obj.printer_id}`;
@@ -54,7 +54,7 @@ handlers.updatePrinter = function(obj, db) {
         db.run(sql_query, function(err) {
             if(err) {
                 console.error(err.message);
-                throw new Error("Request must include a printer_id or name");
+                throw new Error(err.message);
             }
             resolve(handlers.getPrinterList(obj, db));
         });
@@ -63,7 +63,57 @@ handlers.updatePrinter = function(obj, db) {
 
 handlers.getLatestPrints = function (obj, db) {
     return new Promise(function(resolve, reject) {
-        resolve({"test": "test"});
+        db.all(`SELECT * FROM prints`, function(err, rows) {
+            if(err) {
+                console.log(err.message);
+            }
+            resolve(rows);
+        });
+    });
+};
+
+handlers.addPrint = function (obj, db) {
+    return new Promise(function(resolve, reject){
+        const parameters = ["path", "size", "owner_id", "length", 
+                        "filament_length", "filament_volume",
+                        "printer_id", "datetime"];
+        let sql_query = "INSERT INTO prints ";
+        let sql_keys = "";
+        let sql_values = "";
+
+        if(!obj.hasOwnProperty("owner_id")){
+            throw new Error("Print must have an owner_id");
+        }
+
+        // If parameters are presnet in request object,
+        // add them to the sql call
+        let firstRow = true;
+        parameters.forEach( function (parameter, index) {
+            if ( obj.hasOwnProperty(parameter) ){
+                if(!firstRow){
+                    sql_keys += ", ";
+                    sql_values += ", ";
+                }
+                firstRow = false;
+                sql_keys += `'${parameter}'`;
+
+                if(parameter === "datetime"){
+                    sql_values += `datetime('${obj[parameter]}')`;
+                } else {
+                    sql_values += `'${obj[parameter]}'`;
+                }
+            }
+        });
+
+        sql_query += `(${sql_keys}) VALUES (${sql_values})`;
+        console.log(sql_query);
+        db.run(sql_query, function(err) {
+            if(err) {
+                console.error(err.message);
+                throw new Error(err.message);
+            }
+            resolve();
+        });
     });
 };
 

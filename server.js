@@ -1,47 +1,39 @@
 import handler from "./handler.js";
 import express from "express";
 import sqlite3 from "sqlite3";
-console.log(sqlite3.VERSION);
+
 const port = 8080;
 const app = express();
 
 // Load database
-let db = new sqlite3.Database("./db/printFarm.sqlite", (err) => {
-    if(err) {
-        console.log(err.message);
+let db = new sqlite3.Database("./db/printFarm.sqlite", function (err) {
+    if (err) {
+        console.error(err.message);
     }
-    console.log("Connected to database.");
+    console.debug("Connected to database.");
 });
 
 // Set up site
 app.use("/", express.static("static"));
 
+// API interface
 app.use("/printFarm", express.json());
-app.post("/printFarm", function(req, res) {
+app.post("/printFarm", function (req, res) {
     const requestObject = req.body;
-    console.log("Recived POST request!");
+    console.debug("Recived POST request!");
 
     handler(requestObject, db).then(function (responseObject) {
+        // Return data as JSON
         res.setHeader("Content-Type", "application/json");
-        console.log(responseObject);
+        console.debug(responseObject);
         res.end(JSON.stringify(responseObject));
-    }).catch(function(err){
+    }).catch(function (err){
+        // Log errors in console and return them to sender
         console.error(err);
         res.status(400).end("ERROR: " + err.message);
     });
 });
 
-app.get("/printFarm", function(req, res) {
-    const requestObject = req.body;
-    console.log("Recived GET request!");
-
-    handler(requestObject, db).then(function (responseObject) {
-        res.setHeader("Content-Type", "application/json");
-        console.log(responseObject);
-        res.end(JSON.stringify(responseObject));
-    });
-});
-
 app.listen(port, function () {
     console.log("Listening on port " + port);
-})
+});
