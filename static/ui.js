@@ -13,16 +13,59 @@ const printerUpdateSpeed = 5000;
 function updatePrinter(printerElement, printer) {
     const qs = (query) => printerElement.querySelector(query);
 
-    if (printer.status !== "OK") {
-        qs(".printer-image").style.filter = "grayscale(100%)";
-    } else {
-        qs(".printer-image").style.filter = "grayscale(0%)";
-    }
+    const printerImage = qs(".printer-image");
+    const progressBar = qs(".progress-bar");
+    const progressBarBar = qs(".progress-bar-bar");
+    const progressBarStatus = qs(".progress-bar-status");
+    const status = qs(".status");
+    const remainingTime = qs(".remaining-time");
+    const progress = qs(".progress");
 
     qs(".printer-name").textContent = printer.name;
-    qs(".status").textContent = printer.status;
-    qs(".progress").textContent = printer.progress;
-    qs(".remaining-time").textContent = printer.remaining_time;
+    progressBarStatus.textContent = printer.status;
+
+    // Reset items
+    status.textContent = "";
+    remainingTime.textContent = "";
+    progress.textContent = "";
+
+    switch (printer.status) {
+        case "Printing":
+            printerImage.style.filter = "grayscale(0%)";
+
+            progressBar.style.backgroundColor =
+                "var(--printing-color-background)";
+            progressBarBar.style.width = `${printer.progress}%`;
+            progressBarBar.style.backgroundColor =
+                "var(--printing-color-highlight)";
+
+            progress.textContent = `Progress: ${printer.progress}%`;
+            remainingTime.textContent = `${printer.remaining_time} mins?`;
+            break;
+        case "Avalible":
+            printerImage.style.filter = "grayscale(0%)";
+
+            progressBarBar.style.width = `100%`;
+            progressBarBar.style.backgroundColor =
+                "var(--avalible-color)";
+            break;
+        case "Offline":
+            printerImage.style.filter = "grayscale(100%)";
+            
+            progressBarBar.style.width = `100%`;
+            progressBarBar.style.backgroundColor =
+                "var(--offline-color)";
+            break;
+        default:
+            progressBarStatus.textContent = "Offline";
+            printerImage.style.filter = "grayscale(100%)";
+
+            progressBarBar.style.width = `100%`;
+            progressBarBar.style.backgroundColor =
+                "var(--offline-color)";
+
+            status.textContent = `Status: ${printer.status}`;
+    }
 }
 
 function updatePrinters(){
@@ -48,7 +91,7 @@ function updatePrinters(){
                 // console.log(newPrinter);
                 updatePrinter(newPrinter, printer);
                 newPrinter.querySelector(".printer").id = printer.printer_id;
-                printerList.appendChild(newPrinter);
+                printerList.querySelector(".middle-box").appendChild(newPrinter);
             }
         });
     });
@@ -56,9 +99,12 @@ function updatePrinters(){
 }
 
 UI.init = function () {
+
+    updatePrinters();
+    //Update printers every 5 seconds
     let printerUpdateID = setTimeout(function update() {
         updatePrinters();
-        console.log("timer ran");
+        // console.log("timer ran");
 
         printerUpdateID = setTimeout(update, printerUpdateSpeed);
     }, printerUpdateSpeed);
