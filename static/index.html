@@ -2,28 +2,38 @@
 <html lang="en-gb">
 <meta charset="utf-8">
 <title>ICRS Print Managment</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="default.css">
 <link rel="shortcut icon" href="favicon.png">
 <script type="module" src="main.js"></script>
 
 <header>
-    <h1>ICRS Printer Managment</h1>
 </header>
 
 <main>
     <section id="printer-list">
-        <template id="printer">
-            <section class="printer">
-                <img scr="printer.png" alt="pru" class="printer-image">
-                <h3 class="printer-name">Printer name</h3>
-                <p class="status">Ok.</p>
-                <p class="progress">10%</p>
-                <p class="remaining-time">10 min</p>
-            </section>
-        </template>
+        <div class = "middle-box">
+            <template id="printer">
+                <section class="printer">
+                    <img src="media\PrusaI3MK3.png" alt="pru" class="printer-image">
+                    <div class = "printer-info">
+                        <h3 class="printer-name">Printer name</h3>
+                        <div class="progress-bar">
+                            <div class="progress-bar-bar"></div>
+                            <div class="progress-bar-status">Printing</div>
+                        </div>
+                        <p class="status">Printing</p>
+                        <p class="progress">10%</p>
+                        <p class="remaining-time">10 min</p>
+                    </div>
+                </section>
+            </template>
+        </div>
     </section>
 
-    <section id="print-list">
-
+    <section id="print-chart">
+        <div class = "middle-box">
+            <canvas id="print-chart-canvas"></canvas>
+        </div>
     </section>
 </main>
