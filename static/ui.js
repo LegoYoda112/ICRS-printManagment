@@ -6,7 +6,7 @@ const el = (id) => document.getElementById(id);
 const cloneTemplate = (id) => document.importNode(el(id).content, true);
 
 const printerList = el("printer-list");
-const printList = el("print-list");
+const printChartCanvas = el("print-chart-canvas");
 
 const printerUpdateSpeed = 5000;
 
@@ -95,7 +95,36 @@ function updatePrinters(){
             }
         });
     });
+}
 
+function updateCanvas(){
+    let canvas = printChartCanvas;
+    let w = canvas.width = canvas.clientWidth;
+    let h = canvas.height = canvas.clientHeight;
+    let ctx = canvas.getContext('2d');
+
+    let points = [10,200,200,210,100,300,0,50,70,20];
+    let dx = w/points.length;
+
+    for (let i = 0; i < points.length; i ++)
+    {
+        ctx.beginPath(); //Start path
+        ctx.arc(i*dx, h-points[i], 5, 0, Math.PI * 2); // Draw a point using the arc function of the canvas with a point structure.
+        ctx.fill(); // Close the path and fill.
+    }
+
+    ctx.moveTo(0,0);
+    ctx.moveTo(0, points[0]);
+
+    let i;
+    for (i = 0; i < points.length - 1; i ++)
+    {
+        ctx.moveTo(i*dx, h-points[i]);
+        ctx.bezierCurveTo(dx*i + dx/2, h-points[i], dx*(i+1) - dx/2, h-points[i+1], dx*(i+1), h-points[i+1]);
+    }
+    ctx.stroke();
+
+    console.log("chart redrawn");
 }
 
 UI.init = function () {
@@ -108,6 +137,9 @@ UI.init = function () {
 
         printerUpdateID = setTimeout(update, printerUpdateSpeed);
     }, printerUpdateSpeed);
+    updateCanvas();
+    printChartCanvas.onload = updateCanvas;
+    window.addEventListener("resize", updateCanvas);
 
     // database.getLatestPrints().then(function (prints) {
     //     console.log(prints);
