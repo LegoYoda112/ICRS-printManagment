@@ -109,7 +109,9 @@ function updatePrinters(){
 
 function getDayOfTheWeekString (dayInt){
     const daysOfTheWeek = ["Sun", "Mon", "Tue", "Wed", "Thurs", "Fri", "Sat"];
-    const index = Math.abs(dayInt % 7);
+    let index = dayInt % 7;
+    if (index < 0)
+        index += 7;
     return daysOfTheWeek[index];
 }
 
