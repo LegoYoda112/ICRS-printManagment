@@ -32,6 +32,7 @@ function updatePrinter(printerElement, printer) {
     remainingTime.textContent = "";
     progress.textContent = "";
 
+    // Display different info based on printer state
     switch (printer.status) {
         case "Printing":
             printerImage.style.filter = "grayscale(0%)";
@@ -98,7 +99,6 @@ function updatePrinters(){
             // If printer element doesn't exist, add it
             if (!printerExists) {
                 let newPrinter = cloneTemplate("printer");
-                // console.log(newPrinter);
                 updatePrinter(newPrinter, printer);
                 newPrinter.querySelector(".printer").id = printer.printer_id;
                 printerList.querySelector(".middle-box").appendChild(newPrinter);
@@ -107,56 +107,55 @@ function updatePrinters(){
     });
 }
 
-function updateCanvas(){
+function updatePrintCanvas(prints, printers){
     let canvas = printChartCanvas;
     let w = canvas.width = canvas.clientWidth;
     let h = canvas.height = canvas.clientHeight;
     let ctx = canvas.getContext('2d');
+    
+    prints.forEach(function (print) {
+        let printDatetime = new Date(print.datetime);
+        let nowDatetime = new Date();
+
+        // Calcs
+        let diffMins = ((printDatetime - nowDatetime)/1000)/60;
+        let boxX = w + w * (diffMins / (7 * 24 * 60));
+        let boxY = 20 * print.printer_id + 10;
+        let boxW = w * (print.length / (7 * 24 * 60));
+
+        // Draw box
+        ctx.beginPath();
+        ctx.rect(boxX, boxY, boxW, 10);
+        ctx.fill();
+    });
+
+
 
     let points = [10,200,200,210,100,300,0,50,70,20];
-    let dx = w/points.length;
-
-    for (let i = 0; i < points.length; i ++)
-    {
-        ctx.beginPath(); //Start path
-        ctx.arc(i*dx, h-points[i], 5, 0, Math.PI * 2); // Draw a point using the arc function of the canvas with a point structure.
-        ctx.fill(); // Close the path and fill.
-    }
-
-    ctx.moveTo(0,0);
-    ctx.moveTo(0, points[0]);
-
-    let i;
-    for (i = 0; i < points.length - 1; i ++)
-    {
-        ctx.moveTo(i*dx, h-points[i]);
-        ctx.bezierCurveTo(dx*i + dx/2, h-points[i], dx*(i+1) - dx/2, h-points[i+1], dx*(i+1), h-points[i+1]);
-    }
-    ctx.stroke();
 
     console.log("chart redrawn");
 }
 
 UI.init = function () {
 
+    // Initial printer update on load
     updatePrinters();
-    //Update printers every 5 seconds
+
+    // Start a timeout function that updates printers every 5 seconds
     let printerUpdateID = setTimeout(function update() {
         updatePrinters();
-        // console.log("timer ran");
 
         printerUpdateID = setTimeout(update, printerUpdateSpeed);
     }, printerUpdateSpeed);
-    updateCanvas();
-    printChartCanvas.onload = updateCanvas;
-    window.addEventListener("resize", updateCanvas);
 
-    // database.getLatestPrints().then(function (prints) {
-    //     console.log(prints);
-    //     prints.forEach(function (print) {
-    //         console.log(print);
-    //     });
-    // });
+    // Draw printer usage chart and bind it to the resize for the window
+    // allowing it to redraw the chart when the window changes size
+    database.getLatestPrints().then(function (prints) {
+        database.getPrinters().then(function (printers) {
+            updatePrintCanvas(prints, printers);
+            window.addEventListener("resize", updatePrintCanvas(prints, printers));
+        });
+    });
 };
 
 export default Object.freeze(UI);
