@@ -26,9 +26,14 @@ body{
 
 #print-chart-canvas{
     width: 100%;
-    height: 500px;
-    border: solid 4px #999; 
+    height: 200px;
+    /*border: solid 1px #999; */
+}
 
+h2{
+    font-family: 'Roboto Mono', monospace;
+    color: var(--grey-text);
+    font-weight: normal;
 }
 
 h3{
@@ -37,6 +42,7 @@ h3{
 }
 
 #printer-list{
+    padding-top: 50px;
     background: rgb(196, 196, 196);
 }
 
@@ -45,6 +51,8 @@ h3{
     grid-template-columns: repeat(auto-fit,minmax(200px, 1fr));
     margin: auto;
     padding: 40px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     max-width: 1100px;
 }
 

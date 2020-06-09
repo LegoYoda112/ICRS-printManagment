@@ -32,6 +32,7 @@ function updatePrinter(printerElement, printer) {
     remainingTime.textContent = "";
     progress.textContent = "";
 
+    // Display different info based on printer state
     switch (printer.status) {
         case "Printing":
             printerImage.style.filter = "grayscale(0%)";
@@ -98,7 +99,6 @@ function updatePrinters(){
             // If printer element doesn't exist, add it
             if (!printerExists) {
                 let newPrinter = cloneTemplate("printer");
-                // console.log(newPrinter);
                 updatePrinter(newPrinter, printer);
                 newPrinter.querySelector(".printer").id = printer.printer_id;
                 printerList.querySelector(".middle-box").appendChild(newPrinter);
@@ -107,56 +107,108 @@ function updatePrinters(){
     });
 }
 
-function updateCanvas(){
+function getDayOfTheWeekString (dayInt){
+    const daysOfTheWeek = ["Sun", "Mon", "Tue", "Wed", "Thurs", "Fri", "Sat"];
+    let index = dayInt % 7;
+    if (index < 0)
+        index += 7;
+    return daysOfTheWeek[index];
+}
+
+function updatePrintCanvas(prints, printers){
+    // TODO: Could potentialy get screwed up by timezones
+    // TODO: Make height dynamic based on # of printers
     let canvas = printChartCanvas;
     let w = canvas.width = canvas.clientWidth;
     let h = canvas.height = canvas.clientHeight;
+
+    const sidebarWidth = 90;
+    let chartWidth = w - sidebarWidth;
+    const printSpacing = 30; // Vertical spacing between prints
+
     let ctx = canvas.getContext('2d');
+    let nowDatetime = new Date();
+    
+    const timeScale = 7 * 24 * 60; // one week
 
-    let points = [10,200,200,210,100,300,0,50,70,20];
-    let dx = w/points.length;
+    const dayOffset = chartWidth * (nowDatetime.getHours()*60 + nowDatetime.getMinutes()) / timeScale;
+    const nightLength = 7 * 60; // 0:00a - 7:00
+    const noonOffset = chartWidth * (12 * 60) / timeScale; // mins between 0:00 and 12:00
+    console.log(dayOffset);
 
-    for (let i = 0; i < points.length; i ++)
-    {
-        ctx.beginPath(); //Start path
-        ctx.arc(i*dx, h-points[i], 5, 0, Math.PI * 2); // Draw a point using the arc function of the canvas with a point structure.
-        ctx.fill(); // Close the path and fill.
+    // Draw day indicators
+    for(let i = 0; i < 8; i++){
+        // Coordinate of midnight for given day
+        let dayStartPos = w - chartWidth * (i/7) - dayOffset;
+
+        ctx.fillStyle = "#e3e3e3";
+        ctx.fillRect(dayStartPos, 0, chartWidth * (nightLength / timeScale), h - 40);
+        ctx.fillStyle = "#7a8b99";
+        ctx.fillRect(dayStartPos, 0, 1, h-40);
+
+        ctx.fillStyle = "#edc88c";
+        ctx.fillRect(dayStartPos + noonOffset, 0, 2, h - 40);
+
+        ctx.fillStyle = "#2E2E2E";
+        ctx.font = "12px Roboto Mono";
+        ctx.fillText("0:00", dayStartPos, h - 25);
+        ctx.fillText("12:00", dayStartPos + noonOffset, h - 25);
+
+        ctx.fillText(getDayOfTheWeekString(nowDatetime.getDay() - i), dayStartPos, h - 10);
     }
 
-    ctx.moveTo(0,0);
-    ctx.moveTo(0, points[0]);
+    // Draw prints
+    prints.forEach(function (print) {
+        let printDatetime = new Date(print.datetime);
 
-    let i;
-    for (i = 0; i < points.length - 1; i ++)
-    {
-        ctx.moveTo(i*dx, h-points[i]);
-        ctx.bezierCurveTo(dx*i + dx/2, h-points[i], dx*(i+1) - dx/2, h-points[i+1], dx*(i+1), h-points[i+1]);
-    }
-    ctx.stroke();
+        // Calcs
+        let diffMins = ((printDatetime - nowDatetime)/1000)/60;
+        let boxX = w + chartWidth * (diffMins / timeScale);
+        let boxY = printSpacing * print.printer_id;
+        let boxW = chartWidth * (print.length / timeScale);
 
-    console.log("chart redrawn");
+        // Draw box
+        ctx.fillStyle = "#FF6909";
+        ctx.fillRect(boxX, boxY - 15, boxW, 15);
+    });
+
+    ctx.fillStyle = "white";
+    ctx.fillRect(0,0, sidebarWidth, h);
+
+    // Draw printers
+    ctx.fillStyle = "#2E2E2E";
+    printers.forEach(function (printer) {
+        let textY = printSpacing * printer.printer_id;
+        ctx.font = "16px Roboto Mono";
+        ctx.fillText(printer.name, 10, textY);
+    });
+
+    console.debug("Print chart redrawn");
 }
 
 UI.init = function () {
 
+    // Initial printer update on load
     updatePrinters();
-    //Update printers every 5 seconds
+
+    // Start a timeout function that updates printers every 5 seconds
     let printerUpdateID = setTimeout(function update() {
         updatePrinters();
-        // console.log("timer ran");
+        console.debug("Printer update called");
 
         printerUpdateID = setTimeout(update, printerUpdateSpeed);
     }, printerUpdateSpeed);
-    updateCanvas();
-    printChartCanvas.onload = updateCanvas;
-    window.addEventListener("resize", updateCanvas);
 
-    // database.getLatestPrints().then(function (prints) {
-    //     console.log(prints);
-    //     prints.forEach(function (print) {
-    //         console.log(print);
-    //     });
-    // });
+    // Draw printer usage chart and bind it to the resize for the window
+    // allowing it to redraw the chart when the window changes size
+    database.getLatestPrints().then(function (prints) {
+        database.getPrinters().then(function (printers) {
+            window.addEventListener("resize", function(){
+                updatePrintCanvas(prints, printers)
+            });
+            updatePrintCanvas(prints, printers);
+        });
+    });
 };
 
 export default Object.freeze(UI);

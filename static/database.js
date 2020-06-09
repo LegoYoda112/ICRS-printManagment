@@ -25,8 +25,9 @@ database.getPrinters = function () {
 
 database.getLatestPrints = function () {
     return database.query({
-        "requestType": "getLatestPrints",
-        "num": 10
+        "requestType": "searchPrints",
+        "datetime":
+        {"comparison": ">=", "value": "datetime('now', '-7 days')"}
     });
 };
 
