@@ -15,6 +15,7 @@ let db = new sqlite3.Database("./db/printFarm.sqlite", function (err) {
 
 // Set up site
 app.use("/", express.static("static"));
+app.use("/fakePrinter", express.static("fakePrinterUpdate"));
 
 // API interface
 app.use("/printFarm", express.json());
