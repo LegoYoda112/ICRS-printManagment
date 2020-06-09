@@ -204,7 +204,6 @@ UI.init = function () {
     database.getLatestPrints().then(function (prints) {
         database.getPrinters().then(function (printers) {
             window.addEventListener("resize", function(){
-                console.log("test");
                 updatePrintCanvas(prints, printers)
             });
             updatePrintCanvas(prints, printers);
