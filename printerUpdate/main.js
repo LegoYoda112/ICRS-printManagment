@@ -32,7 +32,7 @@ function updatePrinters(){
     getCurrentJob(printerURL).then(function (response) {
         let state = response.state;
         if (state === "Operational"){
-            state = "Avalible";
+            state = "Availible";
         }
         let progress = response.progress.completion;
         let timeLeftMins = response.progress.printTimeLeft/60;
@@ -45,7 +45,8 @@ function updatePrinters(){
             "requestType": "updatePrinter",
             "printer_id": 4,
             "progress": progress.toFixed(2),
-            "remaining_time": timeLeftMins.toFixed(2)
+            "remaining_time": timeLeftMins.toFixed(2),
+            "status": state
         }
         return updatePrinter(body,serverURL);
     });

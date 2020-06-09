@@ -52,7 +52,7 @@ function updatePrinter(printerElement, printer) {
                 remainingTime.textContent = `${hours}h ${mins}m`;
             }
             break;
-        case "Avalible":
+        case "Availible":
             printerImage.style.filter = "grayscale(0%)";
 
             progressBarBar.style.width = `100%`;
