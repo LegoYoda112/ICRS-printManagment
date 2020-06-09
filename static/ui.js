@@ -115,12 +115,15 @@ function getDayOfTheWeekString (dayInt){
 
 function updatePrintCanvas(prints, printers){
     // TODO: Could potentialy get screwed up by timezones
-    // TODO: Make height dynamic
+    // TODO: Make height dynamic based on # of printers
     let canvas = printChartCanvas;
     let w = canvas.width = canvas.clientWidth;
-    let sidebarWidth = 90;
-    let chartWidth = w - sidebarWidth;
     let h = canvas.height = canvas.clientHeight;
+
+    const sidebarWidth = 90;
+    let chartWidth = w - sidebarWidth;
+    const printSpacing = 30; // Vertical spacing between prints
+
     let ctx = canvas.getContext('2d');
     let nowDatetime = new Date();
     
@@ -131,6 +134,7 @@ function updatePrintCanvas(prints, printers){
     const noonOffset = chartWidth * (12 * 60) / timeScale; // mins between 0:00 and 12:00
     console.log(dayOffset);
 
+    // Draw day indicators
     for(let i = 0; i < 8; i++){
         // Coordinate of midnight for given day
         let dayStartPos = w - chartWidth * (i/7) - dayOffset;
@@ -143,7 +147,7 @@ function updatePrintCanvas(prints, printers){
         ctx.fillStyle = "#edc88c";
         ctx.fillRect(dayStartPos + noonOffset, 0, 2, h - 40);
 
-        ctx.fillStyle = "#222629";
+        ctx.fillStyle = "#2E2E2E";
         ctx.font = "12px Roboto Mono";
         ctx.fillText("0:00", dayStartPos, h - 25);
         ctx.fillText("12:00", dayStartPos + noonOffset, h - 25);
@@ -151,29 +155,29 @@ function updatePrintCanvas(prints, printers){
         ctx.fillText(getDayOfTheWeekString(nowDatetime.getDay() - i), dayStartPos, h - 10);
     }
 
-    // Loop through prints and draw them
+    // Draw prints
     prints.forEach(function (print) {
         let printDatetime = new Date(print.datetime);
 
         // Calcs
         let diffMins = ((printDatetime - nowDatetime)/1000)/60;
         let boxX = w + chartWidth * (diffMins / timeScale);
-        let boxY = 25 * print.printer_id;
+        let boxY = printSpacing * print.printer_id;
         let boxW = chartWidth * (print.length / timeScale);
 
         // Draw box
         ctx.fillStyle = "#FF6909";
-        ctx.font = "16px Roboto Mono";
-        ctx.fillRect(boxX, boxY, boxW, 15);
+        ctx.fillRect(boxX, boxY - 15, boxW, 15);
     });
 
     ctx.fillStyle = "white";
     ctx.fillRect(0,0, sidebarWidth, h);
 
-    ctx.fillStyle = "#222629";
+    // Draw printers
+    ctx.fillStyle = "#2E2E2E";
     printers.forEach(function (printer) {
-        let textY = 25 * printer.printer_id;
-
+        let textY = printSpacing * printer.printer_id;
+        ctx.font = "16px Roboto Mono";
         ctx.fillText(printer.name, 10, textY);
     });
 
