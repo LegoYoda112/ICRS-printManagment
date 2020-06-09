@@ -19,6 +19,9 @@ function updatePrinter(printerElement, printer) {
     const progressBarStatus = qs(".progress-bar-status");
     const status = qs(".status");
     const remainingTime = qs(".remaining-time");
+    let remainingTimeMins = printer.remaining_time;
+    let hours = Math.floor(remainingTimeMins/60);
+    let mins = Math.round(remainingTimeMins-hours*60);
     const progress = qs(".progress");
 
     qs(".printer-name").textContent = printer.name;
@@ -39,10 +42,17 @@ function updatePrinter(printerElement, printer) {
             progressBarBar.style.backgroundColor =
                 "var(--printing-color-highlight)";
 
-            progress.textContent = `Progress: ${printer.progress}%`;
-            remainingTime.textContent = `${printer.remaining_time} mins?`;
+            progress.textContent = `Progress: ${printer.progress.toFixed(1)}%`;
+
+            if(hours === 0){
+                remainingTime.textContent = `${mins}m`;
+            } else if(hours === 1){
+                remainingTime.textContent = `1h ${mins}m`;
+            } else {
+                remainingTime.textContent = `${hours}h ${mins}m`;
+            }
             break;
-        case "Avalible":
+        case "Availible":
             printerImage.style.filter = "grayscale(0%)";
 
             progressBarBar.style.width = `100%`;

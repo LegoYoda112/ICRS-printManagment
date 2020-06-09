@@ -17,6 +17,15 @@
             "reAttach": true,
             "url": "http://localhost:8080/index.html",
             "webRoot": "${workspaceFolder}/static"
+        },
+        {
+            "name": "Node printer update",
+            "type": "node",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/printerUpdate/main.js"
         }
     ]
 }

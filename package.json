@@ -20,6 +20,7 @@
   "homepage": "https://github.com/LegoYoda112/ICRS-printManagment#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "node-fetch": "^2.6.0",
     "sqlite3": "^4.2.0"
   }
 }
