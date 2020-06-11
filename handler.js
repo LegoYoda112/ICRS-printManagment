@@ -162,7 +162,7 @@ handlers.searchPrints = function(obj,db) {
 }
 
 const handler = function (obj, db) {
-    // Runs the corresponding handler function
+
     const type = obj.requestType;
     return handlers[type](obj, db);
 };

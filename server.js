@@ -1,4 +1,5 @@
 import handler from "./handler.js";
+import auth from "./auth.js";
 import express from "express";
 import sqlite3 from "sqlite3";
 
@@ -16,6 +17,11 @@ let db = new sqlite3.Database("./db/printFarm.sqlite", function (err) {
 // Set up site
 app.use("/", express.static("static"));
 
+function sendError(err, statusCode, res) {
+    console.error(err);
+    res.status(statusCode).end("ERROR: " + err.message);
+}
+
 // API interface
 app.use("/printFarm", express.json());
 app.post("/printFarm", function (req, res) {
@@ -27,10 +33,20 @@ app.post("/printFarm", function (req, res) {
         res.setHeader("Content-Type", "application/json");
         console.debug(responseObject);
         res.end(JSON.stringify(responseObject));
-    }).catch(function (err){
+    }).catch(function (err) {
         // Log errors in console and return them to sender
-        console.error(err);
-        res.status(400).end("ERROR: " + err.message);
+        sendError(err, 400, res);
+    });
+});
+
+app.use("/APIKey", express.json());
+app.post("/APIKey", function (req, res) {
+    const requestObject = req.body;
+    auth.authAPIKey(requestObject, db).then(function (keyData) {
+        // Only runs if key is authed
+        res.end("test");
+    }).catch(function (err) {
+        sendError(err, 401, res);
     });
 });
 
