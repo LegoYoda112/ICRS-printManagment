@@ -1,6 +1,7 @@
 import handler from "./handler.js";
 import auth from "./auth.js";
 import express from "express";
+import cors from "cors";
 import sqlite3 from "sqlite3";
 
 const port = 8080;
@@ -24,7 +25,9 @@ function sendError(err, statusCode, res) {
 
 // API interface
 app.use("/printFarm", express.json());
-app.post("/printFarm", function (req, res) {
+app.post("/printFarm", cors(), function (req, res) {
+    console.log(req.get('origin'));
+    console.log(req.get('host'));
     const requestObject = req.body;
     console.debug("Recived POST request!");
     auth.authAPIKey(requestObject, db).then(function (keyData) {
