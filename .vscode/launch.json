@@ -11,12 +11,23 @@
             "program": "${workspaceFolder}/server.js"
         },
         {
-            "name": "Firefox debugger",
+            "name": "Main app",
             "type": "firefox",
             "request": "launch",
             "reAttach": true,
             "url": "http://localhost:8080/index.html",
             "webRoot": "${workspaceFolder}/static"
+        },
+        {
+            "name": "Fake printer",
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "reloadOnAttach": true,
+            "file": "${workspaceFolder}/fakePrinterUpdate/index.html",
+            "preferences": {
+            "security.fileuri.strict_origin_policy": false
+            }
         },
         {
             "name": "Node printer update",
