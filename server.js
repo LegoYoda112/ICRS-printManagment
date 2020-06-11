@@ -1,8 +1,15 @@
 import handler from "./handler.js";
 import auth from "./auth.js";
 import express from "express";
+import session from "express-session";
 import cors from "cors";
 import sqlite3 from "sqlite3";
+
+// Helper functions
+function sendError(err, statusCode, res) {
+    console.error(err);
+    res.status(statusCode).end("ERROR: " + err.message);
+}
 
 const port = 8080;
 const app = express();
@@ -17,15 +24,17 @@ let db = new sqlite3.Database("./db/printFarm.sqlite", function (err) {
 
 // Set up site
 app.use("/", express.static("static"));
-
-function sendError(err, statusCode, res) {
-    console.error(err);
-    res.status(statusCode).end("ERROR: " + err.message);
-}
+app.use(session({
+    secret: 'secret-key',
+    resave: false,
+    saveUninitialized: false
+}));
 
 // API interface
 app.use("/printFarm", express.json());
 app.post("/printFarm", cors(), function (req, res) {
+    console.log(req.session.test);
+    req.session.test = "test";
     console.log(req.get('origin'));
     console.log(req.get('host'));
     const requestObject = req.body;

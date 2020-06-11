@@ -21,6 +21,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "node-fetch": "^2.6.0",
     "password-hash": "^1.2.2",
     "sqlite3": "^4.2.0"
