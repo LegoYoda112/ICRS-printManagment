@@ -27,24 +27,29 @@ app.use("/printFarm", express.json());
 app.post("/printFarm", function (req, res) {
     const requestObject = req.body;
     console.debug("Recived POST request!");
-
-    handler(requestObject, db).then(function (responseObject) {
-        // Return data as JSON
-        res.setHeader("Content-Type", "application/json");
-        console.debug(responseObject);
-        res.end(JSON.stringify(responseObject));
+    auth.authAPIKey(requestObject, db).then(function (keyData) {
+        // Only runs when key is authed
+        handler(requestObject, db).then(function (responseObject) {
+            // Return data as JSON
+            res.setHeader("Content-Type", "application/json");
+            console.debug(responseObject);
+            res.end(JSON.stringify(responseObject));
+        }).catch(function (err) {
+            // Log errors in console and return them to sender
+            sendError(err, 400, res);
+        });
     }).catch(function (err) {
-        // Log errors in console and return them to sender
-        sendError(err, 400, res);
+        sendError(err, 401, res);
     });
 });
 
+// APIKey test request
 app.use("/APIKey", express.json());
 app.post("/APIKey", function (req, res) {
     const requestObject = req.body;
     auth.authAPIKey(requestObject, db).then(function (keyData) {
         // Only runs if key is authed
-        res.end("test");
+        res.end("Valid api key and id");
     }).catch(function (err) {
         sendError(err, 401, res);
     });
