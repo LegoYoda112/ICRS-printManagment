@@ -5,27 +5,34 @@ const fetch = window.fetch;
 const json = (response) => response.json();
 
 // Ajax request
-database.queryGET = function (requestObj) {
+database.query = function (type, method, requestObj) {
     const body = JSON.stringify(requestObj);
-    return fetch("/printFarm", {
-        "method": "GET",
-        "body": body,
-        "headers": {
-            "Content-Type": "application/json"
-        }
-    }).then(json);
+    if (method === "GET") {
+        return fetch("/API/" + type, {
+            "method": "GET",
+            "headers": {
+                "Content-Type": "application/json"
+            }
+        }).then(json);
+    }
+    if (method === "POST") {
+        return fetch("/API/" + type, {
+            "method": "POST",
+            "body": body,
+            "headers": {
+                "Content-Type": "application/json"
+            }
+        }).then(json);
+    }
 };
 
 // Database calls
 database.getPrinters = function () {
-    return database.queryGET({
-        "requestType": "getPrinterList"
-    });
+    return database.query("getPrinterList", "GET");
 };
 
 database.getLatestPrints = function () {
-    return database.queryGET({
-        "requestType": "searchPrints",
+    return database.query("searchPrints", "POST", {
         "datetime":
         {"comparison": ">=", "value": "datetime('now', '-7 days')"}
     });
