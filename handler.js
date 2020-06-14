@@ -195,10 +195,17 @@ function rejectHandle(err){
 
 function authedHandle(req, db, handlerObj){
     return new Promise( function(resolve, reject) {
+        // Checks authentication on the key
         auth.authAPIKey(req, db).then(function (keyData) {
-            handlerObj.handle(req.body, db).then( function(responseObject){
-                resolve(responseObject);
-            });
+            // Checks if admin is required
+            if (keyData.admin === handlerObj.needsAdmin){
+                // Handle request and resolve
+                handlerObj.handle(req.body, db).then( function(responseObject){
+                    resolve(responseObject);
+                });
+            } else {
+                reject(new Error("Request requires admin key"));
+            }
         }).catch(function (err) {
             reject(err);
         });
@@ -214,6 +221,7 @@ const handler = function (req, db) {
         return rejectHandle(new Error("Invalid HTTP method type"));
     }
 
+    // Check if request needs authentication to perform
     if(handlerObj.needsAuth){
         return authedHandle(req, db, handlerObj);
     } else {
