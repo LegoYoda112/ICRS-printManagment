@@ -18,9 +18,13 @@ function getKeyData(api_id, db){
             if (err) {
                 reject(new Error(err.message));
             }
-            if (rows.length === 0){
-                reject(new Error("Invalid key or id."))
+            if (rows == undefined){
+                console.log("test");
+                reject(new Error("Database query is undefined"));
+            }else if (rows.length === 0){
+                reject(new Error("Invalid key or id."));
             }
+
             resolve(rows[0]);
         });
     });
@@ -32,8 +36,9 @@ function compareKeyAndHash(key, hash){
     return keyMatch;
 }
 
-auth.authAPIKey = function (obj, db){
+auth.authAPIKey = function (req, db){
     return new Promise( function (resolve, reject) {
+        const obj = req.body;
         // Check to see if the request object has the correct values
         if (!obj.hasOwnProperty("api_key") || !obj.hasOwnProperty("api_id")){
             reject(new Error("Request must contain an api_id and api_key"));

@@ -5,10 +5,10 @@ const fetch = window.fetch;
 const json = (response) => response.json();
 
 // Ajax request
-database.query = function (requestObj) {
+database.queryGET = function (requestObj) {
     const body = JSON.stringify(requestObj);
     return fetch("/printFarm", {
-        "method": "POST",
+        "method": "GET",
         "body": body,
         "headers": {
             "Content-Type": "application/json"
@@ -18,13 +18,13 @@ database.query = function (requestObj) {
 
 // Database calls
 database.getPrinters = function () {
-    return database.query({
+    return database.queryGET({
         "requestType": "getPrinterList"
     });
 };
 
 database.getLatestPrints = function () {
-    return database.query({
+    return database.queryGET({
         "requestType": "searchPrints",
         "datetime":
         {"comparison": ">=", "value": "datetime('now', '-7 days')"}
