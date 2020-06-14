@@ -104,6 +104,8 @@ function updatePrinters(){
                 printerList.querySelector(".middle-box").appendChild(newPrinter);
             }
         });
+    }).catch( function(err){
+        throw new Error(err);
     });
 }
 
@@ -204,7 +206,7 @@ UI.init = function () {
     database.getLatestPrints().then(function (prints) {
         database.getPrinters().then(function (printers) {
             window.addEventListener("resize", function(){
-                updatePrintCanvas(prints, printers)
+                updatePrintCanvas(prints, printers);
             });
             updatePrintCanvas(prints, printers);
         });
