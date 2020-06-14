@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en-gb">
+<meta charset="utf-8">
+<title>Fake printer</title>
+<link rel="stylesheet" href="default.css">
+<link rel="shortcut icon" href="favicon.png">
+<script type="module" src="main.js"></script>
+
+
+<main>
+    <section id="printer-update">
+        <p>
+            This is a fake printer that simulates the calls the server will be reciving from the local server in the robotics lab monitering the printer progress.
+        </p>
+        <p>Printer name to update</p>
+        <input type="text" id="printer_name"></input>
+
+        <p>Printer state</p>
+        <input type="text" id="state"></input>
+
+        <p>Printer progress (percent)</p>
+        <input type="text" id="progress"></input>
+
+        <p>Printer time left (mins)</p>
+        <input type="text" id="remaining_time"></input>
+
+        <p>Hit submit to send an update request to the server</p>
+        <button id="submit">Submit</button>
+    </section>
+</main>
