@@ -174,7 +174,7 @@ handlers.searchPrints = {
             });
 
             // Debug the query
-            console.debug(sql_query);
+            // console.debug(sql_query);
 
             // Run the query and resolve with the result
             db.all(sql_query, function(err, rows) {
@@ -193,10 +193,20 @@ function rejectHandle(err){
         reject( err );});
 }
 
+function authedHandle(req, db, handlerObj){
+    return new Promise( function(resolve, reject) {
+        auth.authAPIKey(req, db).then(function (keyData) {
+            handlerObj.handle(req.body, db).then( function(responseObject){
+                resolve(responseObject);
+            });
+        }).catch(function (err) {
+            reject(err);
+        });
+    });
+}
+
 const handler = function (req, db) {
     let requestType = req.params.requestType;
-    let body = req.body;
-    console.log(body);
     let handlerObj = handlers[requestType];
 
     // Check if the request method matches the allowed request method
@@ -205,14 +215,10 @@ const handler = function (req, db) {
     }
 
     if(handlerObj.needsAuth){
-        auth.authAPIKey(req, db).then(function (keyData) {
-            handlerObj.handle(body, db);
-        }).catch(function (err) {
-            return rejectHandle(err);
-        });
+        return authedHandle(req, db, handlerObj);
+    } else {
+        return handlerObj.handle(req.body, db);
     }
-
-    return handlerObj.handle(body, db);
 };
 
 export default Object.freeze(handler);

@@ -19,7 +19,6 @@ function getKeyData(api_id, db){
                 reject(new Error(err.message));
             }
             if (rows == undefined){
-                console.log("test");
                 reject(new Error("Database query is undefined"));
             }else if (rows.length === 0){
                 reject(new Error("Invalid key or id."));
@@ -49,7 +48,7 @@ auth.authAPIKey = function (req, db){
             // Check if the key matches the hash
             if(compareKeyAndHash(obj.api_key, keyData.key_hashed)) {
                 if(keyData.active){ // If key is valid and active, resolve
-                    resolve(keyData); 
+                    resolve(keyData);
                 } else if(!keyData.active){ // Reject if not active
                     reject(new Error("Key is not active"));
                 }

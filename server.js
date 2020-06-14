@@ -29,7 +29,7 @@ app.use("/", express.static("static"));
 app.use("/printFarm", express.json());
 
 app.use("/API/", express.json());
-app.get("/API/:requestType", function (req, res) {
+app.get("/API/:requestType", cors(), function (req, res) {
     handler(req, db).then(function (responseObject) {
         console.log(responseObject);
         res.setHeader("Content-Type", "application/json");
@@ -39,7 +39,7 @@ app.get("/API/:requestType", function (req, res) {
     });
 });
 
-app.post("/API/:requestType", function (req, res) {
+app.post("/API/:requestType", cors(), function (req, res) {
     handler(req, db).then(function (responseObject) {
         console.log(responseObject);
         res.setHeader("Content-Type", "application/json");
