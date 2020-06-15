@@ -35,9 +35,10 @@
             "request": "launch",
             "reAttach": true,
             "reloadOnAttach": true,
-            "file": "${workspaceFolder}/test.html",
+            "file": "${workspaceFolder}/test/test.html",
             "preferences": {
-            "security.fileuri.strict_origin_policy": false
+            "security.fileuri.strict_origin_policy": false,
+            "privacy_file_unique_origin" : false,
             }
         },
         {
