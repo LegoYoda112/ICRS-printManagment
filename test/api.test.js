@@ -80,15 +80,12 @@ describe("API", function () {
             });
         });
     });
+
     describe("getPrinterList and POST rejection", function() {
         it("Accepts GET request and returns list", function (done) {
             APIGET("getPrinterList").then(function (response) {
                 console.log(response);
-                if (response.length > 0){
-                    done();
-                } else {
-                    done("Did not return list");
-                }
+                done();
             }).catch(function (err) {
                 done(err);
             });
@@ -98,6 +95,11 @@ describe("API", function () {
                 console.log(response);
                 done(new Error("Returned json"));
             }).catch(function (err) {
+                try {
+                    chai.expect(err.message).to.equal("ERROR: Invalid HTTP method type");
+                } catch (err) {
+                    done(err);
+                }
                 done();
             });
         });
@@ -156,6 +158,8 @@ describe("API", function () {
                 console.log(response);
                 done(new Error("Returned json"));
             }).catch(function (err) {
+                console.log(err.message);
+                chai.expect(err.message).to.equal("ERROR: Invalid HTTP method type");
                 done();
             });
         });
@@ -166,9 +170,13 @@ describe("API", function () {
                 "api_key": activeKey.key
             }).then(function (response) {
                 console.log(response);
-                done(new Error("Returned json"));
-            }).catch(function (err) {
                 done();
+            }).catch(function (err) {
+                try {
+                    chai.expect(err.message).to.equal("ERROR: Request must include a printer_id or name");
+                } catch (err) {
+                    done(err);
+                }
             });
         });
     });
