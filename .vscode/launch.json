@@ -29,6 +29,18 @@
             "security.fileuri.strict_origin_policy": false
             }
         },
+        {  
+            "name": "Run Test",
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "reloadOnAttach": true,
+            "file": "${workspaceFolder}/test/test.html",
+            "preferences": {
+            "security.fileuri.strict_origin_policy": false,
+            "privacy_file_unique_origin" : false,
+            }
+        },
         {
             "name": "Node printer update",
             "type": "node",

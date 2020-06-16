@@ -5,7 +5,7 @@ const json = (response) => response.json();
 
 function updatePrinter(requestObj){
     const body = JSON.stringify(requestObj);
-    return fetch("/printFarm", {
+    return fetch("http://192.168.1.73:8080/API/updateprinter", {
         "method": "POST",
         "body": body,
         "headers": {
