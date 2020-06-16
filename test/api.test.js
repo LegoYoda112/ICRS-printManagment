@@ -25,12 +25,10 @@ const adminKey = {
     id: 1,
     key: "7l1EGDVzcPuGHZzv"
 };
-
 const activeKey = {
     id: 2,
     key: "rIkC4tIHT09ervT7"
 };
-
 const inactiveKey = {
     id: 3,
     key: "fnpVW7AQwK0cCGqP"
@@ -273,6 +271,31 @@ describe("API", function () {
                 done(err);
             });
         });
+    });
+
+    describe("addPrint", function() {
+        it("Accepts POST request to add print with all parameters",
+            function (done) {
+                apiPost("addPrint", {
+                    "api_id": activeKey.id,
+                    "api_key": activeKey.key,
+                    "path": "/test/print.gcode",
+                    "size": 1200,
+                    "owner_id": 1,
+                    "length": 1000,
+                    "filament_length": 1000,
+                    "filament_volume": 1000,
+                    "printer_id": 4,
+                    "datetime": "now"
+                }).then(function (response) {
+                    console.log("addPrint:");
+                    console.log(response);
+                    done();
+                }).catch(function (err) {
+                    done(err);
+                });
+            }
+        );
     });
 
     describe("searchPrints", function() {
