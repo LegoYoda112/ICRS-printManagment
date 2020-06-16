@@ -217,6 +217,11 @@ const handler = function (req, db) {
     let requestType = req.params.requestType;
     let handlerObj = handlers[requestType];
 
+    // Check if the handle type exists
+    if (handlerObj === undefined){
+        return rejectHandle(new Error("Invalid request type"));
+    }
+
     // Check if the request method matches the allowed request method
     if (handlerObj.requestMethod !== req.method){
         return rejectHandle(new Error("Invalid HTTP method type"));
