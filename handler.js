@@ -136,7 +136,7 @@ handlers.addPrint = {
                     console.error(err.message);
                     throw new Error(err.message);
                 }
-                resolve();
+                resolve("Success");
             });
         });
     }
@@ -199,7 +199,7 @@ function authedHandle(req, db, handlerObj){
         auth.authAPIKey(req, db).then(function (keyData) {
             // Checks if admin is required
             // keyData.admin === handlerObj.needsAdmin
-            if (true){
+            if (!(handlerObj.needsAdmin && !keyData.admin)){
                 // Handle request and resolve
                 handlerObj.handle(req.body, db).then( function(responseObject){
                     resolve(responseObject);
@@ -216,6 +216,11 @@ function authedHandle(req, db, handlerObj){
 const handler = function (req, db) {
     let requestType = req.params.requestType;
     let handlerObj = handlers[requestType];
+
+    // Check if the handle type exists
+    if (handlerObj === undefined){
+        return rejectHandle(new Error("Invalid request type"));
+    }
 
     // Check if the request method matches the allowed request method
     if (handlerObj.requestMethod !== req.method){

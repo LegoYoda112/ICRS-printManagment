@@ -1,5 +1,4 @@
 import handler from "./handler.js";
-import auth from "./auth.js";
 import express from "express";
 import cors from "cors";
 import sqlite3 from "sqlite3";
@@ -23,12 +22,8 @@ let db = new sqlite3.Database("./db/printFarm.sqlite", function (err) {
 
 // Set up site
 app.use("/", express.static("static"));
-app.use("/fakePrinter", express.static("fakePrinterUpdate"));
-
 
 // API interface
-app.use("/printFarm", express.json());
-
 app.use("/API/", cors(), express.json());
 app.get("/API/", cors(), function (req, res){
     res.end("API is alive!");
@@ -53,52 +48,7 @@ app.post("/API/:requestType", function (req, res) {
     });
 });
 
-app.post("/printFarm", cors(), function (req, res) {
-    console.debug("Recived POST request!");
-    console.log(req);
-
-    auth.authAPIKey(req, db).then(function (keyData) {
-        // Only runs when key is authed
-        handler(req, db).then(function (responseObject) {
-            // Return data as JSON
-            res.setHeader("Content-Type", "application/json");
-            console.debug(responseObject);
-            res.end(JSON.stringify(responseObject));
-        }).catch(function (err) {
-            // Log errors in console and return them to sender
-            sendError(err, 400, res);
-        });
-    }).catch(function (err) {
-        sendError(err, 401, res);
-    });
-});
-
-app.get("/printFarm", function (req, res) {
-    console.debug("Recived POST request!");
-    
-    handler(req, db).then(function (responseObject) {
-        // Return data as JSON
-        res.setHeader("Content-Type", "application/json");
-        console.debug(responseObject);
-        res.end(JSON.stringify(responseObject));
-    }).catch(function (err) {
-        // Log errors in console and return them to sender
-        sendError(err, 400, res);
-    });
-});
-
-
-// APIKey test request
-app.use("/APIKey", express.json());
-app.post("/APIKey", function (req, res) {
-    auth.authAPIKey(req, db).then(function (keyData) {
-        // Only runs if key is authed
-        res.end("Valid api key and id");
-    }).catch(function (err) {
-        sendError(err, 401, res);
-    });
-});
-
+// Start server
 app.listen(port, function () {
     console.log("Listening on port " + port);
 });
