@@ -136,7 +136,7 @@ handlers.addPrint = {
                     console.error(err.message);
                     throw new Error(err.message);
                 }
-                resolve();
+                resolve("Success");
             });
         });
     }
