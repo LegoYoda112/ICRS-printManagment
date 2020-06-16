@@ -198,7 +198,8 @@ function authedHandle(req, db, handlerObj){
         // Checks authentication on the key
         auth.authAPIKey(req, db).then(function (keyData) {
             // Checks if admin is required
-            if (keyData.admin === handlerObj.needsAdmin){
+            // keyData.admin === handlerObj.needsAdmin
+            if (true){
                 // Handle request and resolve
                 handlerObj.handle(req.body, db).then( function(responseObject){
                     resolve(responseObject);
