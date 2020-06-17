@@ -30,19 +30,30 @@ body{
     /*border: solid 1px #999; */
 }
 
+h1{
+    margin: 0px;
+    padding: 30px;
+    font-family: 'Roboto Mono', monospace;
+    color: var(--grey-text);
+    font-size: 30px;
+    font-weight: normal;
+}
+
 h2{
     font-family: 'Roboto Mono', monospace;
     color: var(--grey-text);
     font-weight: normal;
 }
 
-h3{
+.printer-name{
     font-family: 'Roboto Mono', monospace;
     color: var(--grey-text);
+    font-size: 20px;
+    font-weight: bold;
 }
 
 #printer-list{
-    padding-top: 50px;
+    padding-top: 00px;
     background: rgb(196, 196, 196);
 }
 
