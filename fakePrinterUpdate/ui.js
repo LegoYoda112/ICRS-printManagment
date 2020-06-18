@@ -5,7 +5,7 @@ const json = (response) => response.json();
 
 function updatePrinter(requestObj){
     const body = JSON.stringify(requestObj);
-    return fetch("http://192.168.1.73:8080/API/updateprinter", {
+    return fetch("http://localhost:8080/API/updatePrinter", {
         "method": "POST",
         "body": body,
         "headers": {
@@ -25,12 +25,13 @@ function updatePrinters(){
     console.log(timeLeftMins);
 
     const body = {
-        "requestType": "updatePrinter",
         "name": name,
         "progress": progress,
         "remaining_time": timeLeftMins,
-        "status": state
-    }
+        "status": state,
+        "api_id": 2,
+	    "api_key": "rIkC4tIHT09ervT7" // Would be changed in production
+    };
     updatePrinter(body);
 }
 
