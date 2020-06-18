@@ -1,7 +1,7 @@
 ## About
 This webapp is a prototype for an app I am building for ICRS (Imperial College Robotics Society) that will allow users to view remote details about their prints. For the printers available in the database, it displays stats about the current print including progress, remaining time and status (if the printer is broken or offline for another reason). It also includes a database of previous prints, which, with the addition of user accounts, would allow for more intelligent filament billing for members. This print history also enables analysis of the usage patterns of the printers, with a 1 week history displayed on the website, helping users to determine the best time for them to come and start their prints. 
 
-![Website screenshot](https://raw.githubusercontent.com/LegoYoda112/ICRS-printManagment/documentation/media/screenshot.PNG?token=AC3TREEQEXYSDG233B55QMK66SMOU)
+![Website screenshot](https://github.com/LegoYoda112/ICRS-printManagment/blob/dev/media/screenshot.PNG?raw=true)
 
 ### Why do this/future evolution of the project
 This idea formulated last year after getting annoyed at having to come back every now and again to check on the progress of the print. The motivation to pursue this further came with a combination of being elected lab manager and covid-19 forcing social distancing policies that will likely mean limited lab access next year. The final evolution of this project will probably be different depending on what lab opening policies look like next year (we may have no member access, requiring a print submission/management system to be implemented in some form, potently as part of this site)
