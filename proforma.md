@@ -6,7 +6,7 @@
 This is a web app I am designing for the robotics society, it's setup to show the live status of our 3D printers so people don't need to keep coming back into the lab to check if their print is finished/how much time is left. It also includes a chart to show the past week's history of prints to help show when printers are most/least used.
 
 ## Coding
-This project was mostly driven by what data I could grab from the octoprint (https://octoprint.org/) server running on my local printer. Once I had that, I drafted a UI using Figma (www.figma.com) to display it and a database/server to store and serve the data. After that it was basically just writing the front end with html templates and plugging the back end in. 
+This project was mostly driven by what data I could grab from the octoprint (https://octoprint.org/) server running on my local printer. Once I had that, I drafted a UI using Figma (www.figma.com) to display it and a database/server to store and serve the data. After that it was basically just writing the front end with html templates and setting up the back end to dynamically insert/update content.
 
 ## UX/UI
 The two main elements of the UI design are the printer list and the printer chart. The printer list is made up of images, text and styled div elements. The chart is done using html canvas.
